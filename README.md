@@ -359,10 +359,10 @@ filebeat:
 
 Si accede al servidor Kibana escribiendo http://192.168.130.253:5601, podrá ver las siguientes páginas.
 
-![Evidencia]01.png
+![Evidencia](https://github.com/MrNickOS/sd-exam1/blob/A00052208/01.png)
 
-![Evidencia]02.png
+![Evidencia](https://github.com/MrNickOS/sd-exam1/blob/A00052208/02.png)
 
-![Evidencia]03.png
+![Evidencia](https://github.com/MrNickOS/sd-exam1/blob/A00052208/03.png)
 
-![Evidencia]04.png
+![Evidencia](https://github.com/MrNickOS/sd-exam1/blob/A00052208/04.png)
