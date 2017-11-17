@@ -109,7 +109,7 @@ filebeat | Incluye los archivos requeridos para el levantamiento apropiado del s
 
 Para iniciar Elasticsearch se ejecutan se configura el repositporio base y se ejecutan las lineas de código.
 
-```bash
+```repo
 [elasticsearch]
 name=Elasticsearch repository
 baseurl=https://packages.elastic.co/elasticsearch/2.x/centos
@@ -128,7 +128,7 @@ enabled=1
 
 Para ejecutar los próximos comandos, debe existir un .yml
 
-```bash
+```yml
 # ======================== Elasticsearch Configuration =========================
 #
 # NOTE: Elasticsearch comes with reasonable defaults for most settings.
@@ -157,7 +157,7 @@ Y luego continúa con la instalación.
 Mismo procedimiento para Logstash, previo ingreso de estos archivos, en su orden: logstash.repo, openssl.cnf,
 logstash-forwarder.crt, y luego la instalación del servicio.
 
-```bash
+```repo
 [logstash]
 name=Logstash
 baseurl=http://packages.elasticsearch.org/logstash/2.2/centos
@@ -166,7 +166,7 @@ gpgkey=http://packages.elasticsearch.org/GPG-KEY-elasticsearch
 enabled=1
 ```
 
-```bash
+```
 #
 # OpenSSL example configuration file.
 # This is mostly being used for generation of certificate requests.
@@ -194,7 +194,7 @@ ess_cert_id_chain	= no	# Must the ESS cert id chain be included?
 Previo ingreso de estos archivos, en su orden: input.conf, output.conf, filter.conf, los comandos para iniciar
 Logstash.
 
-```bash
+```conf
 input {
 beats {
 port => 5044
@@ -205,7 +205,7 @@ ssl_key => "/etc/pki/tls/private/logstash-forwarder.key"
 }
 ```
 
-```bash
+```conf
 output {
 elasticsearch {
 hosts => ["192.168.130.251:9200"]
@@ -217,7 +217,7 @@ document_type => "%{[@metadata][type]}"
 }
 ```
 
-```bash
+```conf
 filter {
 if [type] == "syslog" {
 grok {
@@ -257,7 +257,7 @@ enabled=1
   yum -y install kibana
 ```
 
-```
+```yml
 # Kibana is served by a back end server. This setting specifies the port to use.
 # server.port: 5601
 
