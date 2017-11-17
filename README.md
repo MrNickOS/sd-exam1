@@ -356,3 +356,13 @@ filebeat:
   systemctl enable filebeat
   systemctl restart network
 ```
+
+Si accede al servidor Kibana escribiendo http://192.168.130.253:5601, podrá ver las siguientes páginas.
+
+![Evidencia]
+
+![Evidencia]
+
+![Evidencia]
+
+![Evidencia]
