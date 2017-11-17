@@ -359,10 +359,10 @@ filebeat:
 
 Si accede al servidor Kibana escribiendo http://192.168.130.253:5601, podrá ver las siguientes páginas.
 
-![Evidencia]
+![Evidencia]01.png
 
-![Evidencia]
+![Evidencia]02.png
 
-![Evidencia]
+![Evidencia]03.png
 
-![Evidencia]
+![Evidencia]04.png
