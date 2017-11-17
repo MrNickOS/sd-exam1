@@ -102,6 +102,7 @@ Directorio | Descripción
 sd-exam1 | Directorio raíz del proyecto, contiene el Vagrantfile y el directorio de cookbooks.
 cookbooks | Alberga las 4 carpetas que contienen archivos de aprovisionamiento de cada VM del stack ELK.
 elasticsearch | Incluye los archivos requeridos para el funcionamiento adecuado del servicio de Elasticsearch en el subdirectorio *files/default*, así como los script *bash* para la ejecución automatizada de los comandos de instalación en *recipes*.
-logstash | Contiene archivos de configuración de repositorio (.repo) y de host (.yml) predeterminados, así como las instrucciones a ejecutar para instalar e iniciar el servicio de Logstash.
-kibana | Contiene archivos de configuración de repositorio (.repo) y host (.yml) predeterminados, así como las comandos para instalar e iniciar el servicio de Kibana. El puerto que se especifique en el .yml deberá ingresarse en el navegador web como IP:PUERTO.
+logstash | Contiene archivos de configuración de repositorio (.repo) y de host (.yml) predeterminados, así como las instrucciones en *bash* a ejecutar para instalar e iniciar el servicio de Logstash.
+kibana | Contiene archivos de configuración de repositorio (.repo) y host (.yml) predeterminados, así como las comandos *bash* para instalar e iniciar el servicio de Kibana. El puerto que se especifique en el .yml deberá ingresarse en el navegador web como IP:PUERTO.
 filebeat | Incluye los archivos requeridos para el levantamiento apropiado del servicio Filebeat en el subfolder *files/default*, así como los script *bash* para la ejecución automatizada de los comandos de instalación en el subfolder *recipes*.
+
