@@ -1,5 +1,5 @@
 # Parcial 1 Sistemas Distribuidos
-### Autor: Nicolás Machado Sáenz
+### Autor: Nicolás Machado Sáenz (A00052208)
 ### Tema: Aprovisionamiento de Infraestructura con Vagrant + Chef
 
 El objetivo de esta actividad es aprovisionar un ambiente virtualizado del stack ELK: ElasticSearch, Logstash
@@ -96,7 +96,8 @@ CentOS 7, interfaz de red bridge con el puerto de red del anfitrión. Luego, usa
 denominados recetas, y que automatizan el proceso de instalación y activación de los servicios, explicados a
 continuación.
 
-## Recetas para el despliegue
+### Recetas para el despliegue y ejecución de comandos
+
 Directorio | Descripción
 ---------- | -----------
 sd-exam1 | Directorio raíz del proyecto, contiene el Vagrantfile y el directorio de cookbooks.
@@ -106,3 +107,47 @@ logstash | Contiene archivos de configuración de repositorio (.repo) y de host 
 kibana | Contiene archivos de configuración de repositorio (.repo) y host (.yml) predeterminados, así como las comandos *bash* para instalar e iniciar el servicio de Kibana. El puerto que se especifique en el .yml deberá ingresarse en el navegador web como IP:PUERTO.
 filebeat | Incluye los archivos requeridos para el levantamiento apropiado del servicio Filebeat en el subfolder *files/default*, así como los script *bash* para la ejecución automatizada de los comandos de instalación en el subfolder *recipes*.
 
+Para iniciar Elasticsearch se ejecutan estas lineas de código.
+
+```bash
+[elasticsearch]
+name=Elasticsearch repository
+baseurl=https://packages.elastic.co/elasticsearch/2.x/centos
+gpgcheck=1
+gpgkey=https://packages.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+```
+
+```bash
+yum makecache fast
+  yum -y install java
+  rpm --import http://packages.elastic.co/GPG-KEY-elasticsearch
+  yum -y install elasticsearch
+  systemctl daemon-reload
+```
+
+Para ejecutar los comandos siguientes, debe existir un .yml
+```bash
+# ======================== Elasticsearch Configuration =========================
+#
+# NOTE: Elasticsearch comes with reasonable defaults for most settings.
+...
+#network.host: 192.168.100.40
+network.host: 192.168.130.251
+#
+# Set a custom port for HTTP:
+#
+http.port: 9200
+#
+...
+```
+
+Y luego continúa con la instalación.
+```bash
+systemctl enable elasticsearch
+  systemctl start firewalld
+  firewall-cmd --add-port=9200/tcp
+  firewall-cmd --add-port=9200/tcp --permanent
+  systemctl restart network
+  systemctl start elasticsearch
+```
