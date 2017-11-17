@@ -119,7 +119,7 @@ enabled=1
 ```
 
 ```bash
-yum makecache fast
+  yum makecache fast
   yum -y install java
   rpm --import http://packages.elastic.co/GPG-KEY-elasticsearch
   yum -y install elasticsearch
@@ -146,7 +146,7 @@ http.port: 9200
 Y luego continúa con la instalación.
 
 ```bash
-systemctl enable elasticsearch
+  systemctl enable elasticsearch
   systemctl start firewalld
   firewall-cmd --add-port=9200/tcp
   firewall-cmd --add-port=9200/tcp --permanent
@@ -237,5 +237,52 @@ match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
   systemctl start firewalld
   firewall-cmd --add-port=5044/tcp
   firewall-cmd --add-port=5044/tcp --permanent
+  systemctl restart network
+```
+
+Para Kibana se configuran el .repo, .yml y serie de comandos.
+
+```
+[kibana]
+name=Kibana repository
+baseurl=http://packages.elastic.co/kibana/4.4/centos
+gpgcheck=1
+gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+```
+
+```bash
+  yum makecache fast
+  yum -y install java
+  yum -y install kibana
+```
+
+```
+# Kibana is served by a back end server. This setting specifies the port to use.
+# server.port: 5601
+
+# This setting specifies the IP address of the back end server.
+server.host: "0.0.0.0"
+
+# Enables you to specify a path to mount Kibana at if you are running behind a proxy. This setting
+# cannot end in a slash.
+# server.basePath: ""
+
+# The maximum payload size in bytes for incoming server requests.
+# server.maxPayloadBytes: 1048576
+
+# The URL of the Elasticsearch instance to use for all your queries.
+# elasticsearch.url: "http://192.168.100.40:9200"
+elasticsearch.url: "http://192.168.130.251:9200"
+...
+```
+
+```bash
+  systemctl daemon-reload
+  systemctl start kibana
+  systemctl enable kibana
+  systemctl start firewalld
+  firewall-cmd --add-port=5601/tcp
+  firewall-cmd --add-port=5601/tcp --permanent
   systemctl restart network
 ```
