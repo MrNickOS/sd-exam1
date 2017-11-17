@@ -242,7 +242,7 @@ match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
 
 Para Kibana se configuran el .repo, .yml y serie de comandos.
 
-```
+```repo
 [kibana]
 name=Kibana repository
 baseurl=http://packages.elastic.co/kibana/4.4/centos
@@ -284,5 +284,75 @@ elasticsearch.url: "http://192.168.130.251:9200"
   systemctl start firewalld
   firewall-cmd --add-port=5601/tcp
   firewall-cmd --add-port=5601/tcp --permanent
+  systemctl restart network
+```
+
+Y por último, similar procedimiento con el Filebeat, aunque se le añade el certificado de Logstash.
+
+```repo
+[filebeat]
+name=Filebeat for ELK clients
+baseurl=https://packages.elastic.co/beats/yum/el/$basearch
+enabled=1
+gpgkey=https://packages.elastic.co/GPG-KEY-elasticsearch
+gpgcheck=1
+```
+
+```yml
+################### Filebeat Configuration Example #########################
+
+############################# Filebeat ######################################
+filebeat:
+...
+### Elasticsearch as output
+  elasticsearch:
+    # Array of hosts to connect to.
+    # Scheme and port can be left out and will be set to the default (http and 9200)
+    # In case you specify and additional path, the scheme is required http://localhost:9200/path
+    # IPv6 addresses should always be defined as https://[2001:db8::1]:9200
+    #hosts ["192.168.100.40:9200"]
+    hosts: ["192.168.130.251:9200"]
+...
+  ### Logstash as output
+  logstash:
+    # The Logstash hosts
+    #hosts:["192.168.100.30:5044"]
+    hosts: ["192.168.130.252:9200"]
+    # Number of workers per Logstash host.
+    #worker:1
+
+    # The maximum number of events to bulk into a single batch window. The
+    # default is 2048.
+    #bulk_max_size:2048
+
+    # Set gzip compression level.
+    #compression_level:3
+
+    # Optional load balance the events between the Logstash hosts
+    #loadbalance:true
+
+    # Optional index name. The default index name depends on the each beat.
+    # For Packetbeat, the default is set to packetbeat, for Topbeat
+    # top topbeat and for Filebeat to filebeat.
+    #index:filebeat
+
+    # Optional TLS. By default is off.
+    tls:
+      # List of root certificates for HTTPS server verifications
+      certificate_authorities: ["/etc/pki/tls/certs/logstash-forwarder.crt"]
+...
+    # Configure log file size limit. If limit is reached, log file will be
+    # automatically rotated
+    rotateeverybytes: 12582912 # = 12MB
+...
+```
+
+```bash
+  yum makecache fast
+  rpm --import http://packages.elastic.co/GPG-KEY-elasticsearch
+  yum -y install filebeat
+  systemctl daemon-reload
+  systemctl start filebeat
+  systemctl enable filebeat
   systemctl restart network
 ```
