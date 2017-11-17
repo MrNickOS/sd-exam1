@@ -107,7 +107,7 @@ logstash | Contiene archivos de configuración de repositorio (.repo) y de host 
 kibana | Contiene archivos de configuración de repositorio (.repo) y host (.yml) predeterminados, así como las comandos *bash* para instalar e iniciar el servicio de Kibana. El puerto que se especifique en el .yml deberá ingresarse en el navegador web como IP:PUERTO.
 filebeat | Incluye los archivos requeridos para el levantamiento apropiado del servicio Filebeat en el subfolder *files/default*, así como los script *bash* para la ejecución automatizada de los comandos de instalación en el subfolder *recipes*.
 
-Para iniciar Elasticsearch se ejecutan estas lineas de código.
+Para iniciar Elasticsearch se ejecutan se configura el repositporio base y se ejecutan las lineas de código.
 
 ```bash
 [elasticsearch]
@@ -126,7 +126,8 @@ yum makecache fast
   systemctl daemon-reload
 ```
 
-Para ejecutar los comandos siguientes, debe existir un .yml
+Para ejecutar los próximos comandos, debe existir un .yml
+
 ```bash
 # ======================== Elasticsearch Configuration =========================
 #
@@ -143,6 +144,7 @@ http.port: 9200
 ```
 
 Y luego continúa con la instalación.
+
 ```bash
 systemctl enable elasticsearch
   systemctl start firewalld
@@ -150,4 +152,90 @@ systemctl enable elasticsearch
   firewall-cmd --add-port=9200/tcp --permanent
   systemctl restart network
   systemctl start elasticsearch
+```
+
+Mismo procedimiento para Logstash, previo ingreso de estos archivos, en su orden: logstash.repo, openssl.cnf,
+logstash-forwarder.crt, y luego la instalación del servicio.
+
+```bash
+[logstash]
+name=Logstash
+baseurl=http://packages.elasticsearch.org/logstash/2.2/centos
+gpgcheck=1
+gpgkey=http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+enabled=1
+```
+
+```bash
+#
+# OpenSSL example configuration file.
+# This is mostly being used for generation of certificate requests.
+#
+
+# This definition stops the following lines choking if HOME isn't
+# defined.
+...
+[ v3_ca ]
+#subjectAltName = IP: 192.168.100.30
+subjectAltName = IP: 192.168.130.252
+
+# Extensions for a typical CA
+...
+ess_cert_id_chain	= no	# Must the ESS cert id chain be included?
+				# (optional, default: no)
+```
+
+```bash
+  yum makecache fast
+  yum -y install java
+  yum -y install logstash
+```
+
+Previo ingreso de estos archivos, en su orden: input.conf, output.conf, filter.conf, los comandos para iniciar
+Logstash.
+
+```bash
+input {
+beats {
+port => 5044
+ssl => true
+ssl_certificate => "/etc/pki/tls/certs/logstash-forwarder.crt"
+ssl_key => "/etc/pki/tls/private/logstash-forwarder.key"
+}
+}
+```
+
+```bash
+output {
+elasticsearch {
+hosts => ["192.168.130.251:9200"]
+sniffing => true
+manage_template => false
+index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+document_type => "%{[@metadata][type]}"
+}
+}
+```
+
+```bash
+filter {
+if [type] == "syslog" {
+grok {
+match => { "message" => "%{SYSLOGLINE}" }
+}
+date {
+match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+}
+}
+}
+```
+
+```bash
+  systemctl daemon-reload
+  systemctl enable logstash
+  systemctl start logstash
+  systemctl start firewalld
+  firewall-cmd --add-port=5044/tcp
+  firewall-cmd --add-port=5044/tcp --permanent
+  systemctl restart network
 ```
