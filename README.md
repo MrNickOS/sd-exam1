@@ -91,3 +91,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 end
 ```
 
+Como se puede ver, a cada máquina se le asignó 1 core de procesamiento, 840 MB de RAM y usa una *box* base con
+CentOS 7, interfaz de red bridge con el puerto de red del anfitrión. Luego, usa una serie de scripts en Ruby,
+denominados recetas, y que automatizan el proceso de instalación y activación de los servicios, explicados a
+continuación.
+
+## Recetas para el despliegue
+Directorio | Descripción
+---------- | -----------
+sd-exam1 | Directorio raíz del proyecto, contiene el Vagrantfile y el directorio de cookbooks.
+cookbooks | Alberga las 4 carpetas que contienen archivos de aprovisionamiento de cada VM del stack ELK.
+elasticsearch | Incluye los archivos requeridos para el funcionamiento adecuado del servicio de Elasticsearch en el subdirectorio *files/default*, así como los script *bash* para la ejecución automatizada de los comandos de instalación en *recipes*.
+logstash | Contiene archivos de configuración de repositorio (.repo) y de host (.yml) predeterminados, así como las instrucciones a ejecutar para instalar e iniciar el servicio de Logstash.
+kibana | Contiene archivos de configuración de repositorio (.repo) y host (.yml) predeterminados, así como las comandos para instalar e iniciar el servicio de Kibana. El puerto que se especifique en el .yml deberá ingresarse en el navegador web como IP:PUERTO.
+filebeat | Incluye los archivos requeridos para el levantamiento apropiado del servicio Filebeat en el subfolder *files/default*, así como los script *bash* para la ejecución automatizada de los comandos de instalación en el subfolder *recipes*.
